@@ -13,6 +13,7 @@
     "axios": "^0.19.2",
     "bootstrap-vue": "^2.15.0",
     "chart.js": "2.9.3",
+    "cheerio": "^1.0.0-rc.3",
     "core-js": "^3.6.5",
     "firebase": "^7.15.5",
     "v-contextmenu": "^2.9.0",

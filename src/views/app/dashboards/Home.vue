@@ -124,8 +124,12 @@ import SmallLineCharts from "../../../containers/dashboards/SmallLineCharts";
 import SortableStaticticsRow from "../../../containers/dashboards/SortableStaticticsRow";
 import TopRatedItems from "../../../containers/dashboards/TopRatedItems";
 import WebsiteVisitsChartCard from "../../../containers/dashboards/WebsiteVisitsChartCard";
+import scraper from "../../../scraper/index.js";
 
 export default {
+    created () {
+        console.log(scraper.getText())
+    },
   components: {
     "advanced-search": AdvancedSearch,
     "best-sellers": BestSellers,
