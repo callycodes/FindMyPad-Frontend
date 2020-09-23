@@ -9,18 +9,24 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    component: () => import(/* webpackChunkName: "home" */ "./views/home"),
-  },
-  {
-    path: adminRoot,
     component: () => import(/* webpackChunkName: "app" */ "./views/app"),
-    redirect: `${adminRoot}/dashboards`,
-    meta: { loginRequired: true },
+    redirect: `/home`,
     /*
     define with Authorization :
     meta: { loginRequired: true, roles: [UserRole.Admin, UserRole.Editor] },
     */
     children: [
+      {
+        path: "home",
+        component: () =>
+          import(/* webpackChunkName: "dashboards" */ "./views/app/dashboards/Home"),
+      }, 
+      {
+        path: "shortlist",
+        component: () =>
+          import(/* webpackChunkName: "dashboards" */ "./views/app/applications/Shortlist"),
+         meta: { roles: [UserRole.Admin] },
+      }, 
       {
         path: "dashboards",
         component: () =>

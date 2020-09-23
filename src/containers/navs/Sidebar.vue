@@ -306,8 +306,13 @@ export default {
     filteredMenuItems(menuItems) {
       return menuItems
         ? menuItems.filter(
-            (x) =>
-              !x.roles || (x.roles && x.roles.includes(this.currentUser.role))
+            (x) => {
+              try {
+return (!x.roles) || (x.roles && x.roles.includes(this.currentUser.role))
+              } catch {
+                return false
+              }
+            }
           )
         : [];
     },

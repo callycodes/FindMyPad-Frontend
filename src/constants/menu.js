@@ -1,7 +1,23 @@
 import { adminRoot } from "./config";
 import { UserRole } from "../utils/auth.roles";
 
-const data = [{
+const data = [
+  
+
+  {
+    id: "home",
+    icon: "iconsminds-home",
+    label: "menu.home",
+    to: `/home`
+  },
+  {
+    id: "shortlist",
+    icon: "iconsminds-box-with-folders",
+    label: "Shortlist",
+    to: `/shortlist`,
+    roles: [UserRole.Admin],
+  },
+  {
   id: "dashboards",
   icon: "iconsminds-shop-4",
   label: "menu.dashboards",

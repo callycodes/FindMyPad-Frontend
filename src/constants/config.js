@@ -1,7 +1,7 @@
 import { UserRole } from "../utils/auth.roles";
 
-export const defaultMenuType = 'menu-default' // 'menu-default', 'menu-sub-hidden', 'menu-hidden';
-export const adminRoot = '/app';
+export const defaultMenuType = 'menu-sub-hidden' // 'menu-default', 'menu-sub-hidden', 'menu-hidden';
+export const adminRoot = '/';
 export const searchPath = `${adminRoot}/pages/miscellaneous/search`
 export const buyUrl = 'https://1.envato.market/nEyZa'
 export const apiUrl = 'https://api.coloredstrategies.com';
@@ -18,27 +18,21 @@ export const localeOptions = [
 ]
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyDe94G7L-3soXVSpVbsYlB5DfYH2L91aTU",
-  authDomain: "piaf-vue-login.firebaseapp.com",
-  databaseURL: "https://piaf-vue-login.firebaseio.com",
-  projectId: "piaf-vue-login",
-  storageBucket: "piaf-vue-login.appspot.com",
-  messagingSenderId: "557576321564",
-  appId: "1:557576321564:web:bc2ce73477aff5c2197dd9"
+  apiKey: "AIzaSyB7iYR0Ia0dO-Hn1mr420JNSd8zIHjOMKc",
+    authDomain: "uniaccom-a395d.firebaseapp.com",
+    databaseURL: "https://uniaccom-a395d.firebaseio.com",
+    projectId: "uniaccom-a395d",
+    storageBucket: "uniaccom-a395d.appspot.com",
+    messagingSenderId: "699968533233",
+    appId: "1:699968533233:web:8da8e9cea39135e29fef50"
 };
 
 
 
 
-export const currentUser = {
-  id: 1,
-  title: 'Sarah Kortney',
-  img: '/assets/img/profiles/l-1.jpg',
-  date: 'Last seen today 15:24',
-  role: UserRole.Admin
-}
+export const currentUser = null
 
-export const isAuthGuardActive = false
+export const isAuthGuardActive = true
 export const themeRadiusStorageKey = 'theme_radius'
 export const themeSelectedColorStorageKey = 'theme_selected_color'
 export const defaultColor = 'light.blueolympic'

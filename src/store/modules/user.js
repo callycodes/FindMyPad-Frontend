@@ -2,6 +2,7 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 import { currentUser, isAuthGuardActive } from '../../constants/config'
 import { setCurrentUser, getCurrentUser } from '../../utils'
+import { UserRole } from "../../utils/auth.roles";
 
 export default {
   state: {
@@ -58,14 +59,19 @@ export default {
     login({ commit }, payload) {
       commit('clearError')
       commit('setProcessing', true)
+
+      console.log("Login process")
       firebase
         .auth()
         .signInWithEmailAndPassword(payload.email, payload.password)
         .then(
           user => {
-            const item = { uid: user.user.uid, ...currentUser }
+            const item = { uid: user.user.uid, title: 'test', img: '', role: UserRole.Admin, ...currentUser }
+            console.log("logging in: " + user.user.uid)
             setCurrentUser(item)
             commit('setUser', item)
+
+            console.log('Current user: ' + currentUser.id)
           },
           err => {
             setCurrentUser(null);
