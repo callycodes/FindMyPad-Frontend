@@ -1,0 +1,19 @@
+{
+  "name": "uniaccom",
+  "version": "1.0.0",
+  "description": "Student accomodation shortlisting tool, compare properties, travel distance &amp; costs in a simple UI.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/callycodes/UniAccom.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/callycodes/UniAccom/issues"
+  },
+  "homepage": "https://github.com/callycodes/UniAccom#readme"
+}
