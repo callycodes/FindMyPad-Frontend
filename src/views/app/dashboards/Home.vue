@@ -6,6 +6,25 @@
         <div class="separator mb-5"></div>
       </b-colxx>
     </b-row>
+
+    <b-row>
+
+    <b-input-group class="mb-3">
+                <b-form-input v-model="rightmoveURL" />
+                <b-input-group-append>
+                    <b-button @click="addProperty" variant="outline-secondary">{{ $t('input-groups.button') }}</b-button>
+                </b-input-group-append>
+            </b-input-group>
+    </b-row>
+
+
+    <b-row>
+
+        <property-list title="Properties" :propertyData="propertyData"></property-list>
+     
+
+    </b-row>
+
     <b-row>
       <b-colxx xl="6" lg="12">
         <icon-cards-carousel></icon-cards-carousel>
@@ -110,6 +129,7 @@ import GradientCard from "../../../components/Cards/GradientCard";
 import GradientWithRadialProgressCard from "../../../components/Cards/GradientWithRadialProgressCard";
 import AdvancedSearch from "../../../containers/dashboards/AdvancedSearch";
 import BestSellers from "../../../containers/dashboards/BestSellers";
+import PropertyList from "../../../containers/dashboards/PropertyList";
 import Cakes from "../../../containers/dashboards/Cakes";
 import Calendar from "../../../containers/dashboards/Calendar";
 import ConversionRatesChartCard from "../../../containers/dashboards/ConversionRatesChartCard";
@@ -127,12 +147,50 @@ import WebsiteVisitsChartCard from "../../../containers/dashboards/WebsiteVisits
 import scraper from "../../../scraper/index.js";
 
 export default {
-    created () {
-        console.log(scraper.getText())
+  data () {
+      return {
+      propertyData: [
+        {
+          type: 'Example',
+          bedrooms: '10x',
+          bathrooms: '15x',
+          price: '£1000 pcm / £250 pw'
+        }
+      ],
+      rightmoveURL: ''
+      }
     },
+    created () {
+        //console.log(scraper.getText())
+    },
+    methods: {
+      tryScrape () {
+        scraper.tryScrape(this.rightmoveURL)
+      },
+      async addProperty () {
+        let property = await scraper.getText(this.rightmoveURL)
+          console.log("property: " + JSON.stringify(property))
+        
+          //console.log(JSON.stringify(property))
+        
+//console.log(property['data'][0]['location'])
+        this.propertyData.push({
+          type: property['property_info'].property_type,
+          bedrooms: property['property_info'].bedrooms,
+          bathrooms: property['property_info'].bathrooms,
+          price: property.price_per_month.concat(' / ', property.price_per_week)
+        })
+
+        console.log('Properties: ' + this.propertyData.length)
+        }
+        
+      
+    },
+    
   components: {
     "advanced-search": AdvancedSearch,
     "best-sellers": BestSellers,
+    "property-list": PropertyList,
     cakes: Cakes,
     calendar: Calendar,
     "converconversion-rates-chart-card": ConversionRatesChartCard,

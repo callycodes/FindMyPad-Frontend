@@ -1,7 +1,8 @@
 const CopyPlugin = require('copy-webpack-plugin')
 
-module.exports = {
 
+module.exports = {
+  
   pages: {
     index: {
       entry: 'src/index.js',
@@ -36,6 +37,7 @@ module.exports = {
   productionSourceMap: false,
   assetsDir: './assets/',
   configureWebpack: {
+    
     plugins: [
       new CopyPlugin({
         patterns: [
