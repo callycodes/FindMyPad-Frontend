@@ -12,8 +12,6 @@ Vue.use(IconsPlugin)
 
 Vue.config.productionTip = false
 
-import './assets/css/global.css'
-
 new Vue({
   router,
   render: h => h(App),

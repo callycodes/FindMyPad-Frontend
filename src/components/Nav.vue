@@ -2,7 +2,7 @@
   <div id="nav">
 
     <b-button id="toggle-sidebar-btn" @click="toggleSidebar">Toggle Sidebar</b-button>
-  <b-sidebar width="400px" :visible="shown" id="nav-sidebar" title="Sidebar" no-header>
+  <b-sidebar no-close-on-route-change=true width="400px" :visible="shown" id="nav-sidebar" title="Sidebar" no-header>
       <div id="nav-sidebar">
         <div class="nav-logo">
            <b-icon class="icon" icon="house-door" style="width: 150px; height: 150px;"></b-icon>
@@ -10,10 +10,10 @@
         </div>
 
         <ul class="nav-list">
-          <li>Home</li>
-          <li>Add Property</li>
-          <li>My Properties</li>
-          <li>Settings</li>
+          <li><router-link :to="'/'">Home</router-link></li>
+          <li><router-link :to="'/add'">Add Property</router-link></li>
+          <li><router-link :to="'/properties'">My Properties</router-link></li>
+          <li><router-link :to="'/settings'">Settings</router-link></li>
         </ul>
 
       </div>
@@ -49,6 +49,9 @@ export default {
     return {
       shown: true
     }
+  },
+  mounted () {
+    this.show();
   }
 }
 </script>
@@ -95,6 +98,14 @@ export default {
   transition: transform 1s;
 }
 
+.nav-list li a {
+  color: var(--gainsboro);
+  text-decoration: none;
+}
+
+.nav-list li .router-link-exact-active {
+  color: var(--ming);
+}
 
 .nav-list li:hover {
   transform: scale(1.1);

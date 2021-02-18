@@ -1,57 +1,25 @@
 <template>
   <div class="hello">
 
-    <ImageTitle title="This is a slightly longer title" />
+    <ImageTitle title="Home"  />
 
-    woah
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1><h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
-    <h1>woah</h1>
+    <MainContent>
+      <h1>Welcome to UniAccom</h1>
+      <p>Cool huh</p>
+    </MainContent>
+    
   </div>
 </template>
 
 <script>
 
 import ImageTitle from '../components/layouts/ImageTitle'
+import MainContent from '../components/layouts/MainContent'
 
 export default {
   components: {
-    ImageTitle
+    ImageTitle,
+    MainContent
   }
 }
 
