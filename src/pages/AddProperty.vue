@@ -1,39 +1,116 @@
 <template>
   <div id="add-property-page">
   <ImageFull>
-    <b-card title="Card Title" body-class="text-center" header-tag="nav">
-    <template #header>
-      <b-nav card-header tabs>
-        <b-nav-item active>Active</b-nav-item>
-        <b-nav-item>Inactive</b-nav-item>
-        <b-nav-item disabled>Disabled</b-nav-item>
-      </b-nav>
-    </template>
+    <MainContent class="main-content">
+      <b-button-group class="import-buttons" size="lg">
+      <b-button variant="info">
+        <img src="assets/img/logos/rightmove.png"/>
+      </b-button>
+      <b-button variant="purple">
+        <img src="assets/img/logos/zoopla.png"/>
+      </b-button>
+      <b-button variant="light">
+        <span class='font-raleway'>Manual</span>
+      </b-button>
+    </b-button-group>
 
-    <b-card-text>
-      With supporting text below as a natural lead-in to additional content.
-    </b-card-text>
+    <b-card id="rightmove-container" border-variant="light" class="text-center">
+        <b-container class="w-100">
+        <b-form inline>
+  
+  <b-row class="w-100">
+    <b-col cols="9">
+    <b-form-input
+    size="lg"
+      id="rightmove_input"
+      class="mr-sm-2"
+      placeholder="https://www.rightmove.co.uk/properties/89209096#/"
+      v-model="url"
+    ></b-form-input>
+</b-col>
 
-    <b-button variant="primary">Go somewhere</b-button>
-  </b-card>
+<b-col cols="3">
+    <b-button id="rightmove_submit" @click="submit" size="lg" variant="dark">Import</b-button>
+  </b-col>
+  </b-row>
+  </b-form>
+        </b-container>
+      </b-card>
+    </MainContent>
   </ImageFull>
   </div>
 </template>
 
 <script>
 import ImageFull from '../components/layouts/ImageFull'
+import MainContent from '../components/layouts/MainContent'
 
 export default {
   components: {
-    ImageFull
+    ImageFull,
+    MainContent
   },
+  data () {
+    return {
+      url: ''
+    }
+  },
+  methods: {
+    submit: function() {
+      console.log('wow')
+        this.axios.get('http://127.0.0.1:5000/rightmove?url=' + this.url).then((response) => {
+    console.log(response.data)
+  })
+
+    }
+  }
 }
 </script>
 
 <style scoped>
 
+
 #add-property-page {
   height: 100%;
+  padding-top: 40%;
+}
+
+.main-content {
+  text-align: center;
+}
+
+.btn-purple {
+  background-color: purple;
+  color: white;
+}
+
+.import-buttons {
+  width: 100%;
+  margin: auto;
+  margin-bottom: 30px;
+  margin-top: 100px;
+
+}
+
+.import-buttons button {
+  padding: 5px;
+  max-width: 33%;
+}
+
+button img {
+  width: 50%;
+}
+
+#rightmove-container {
+  background-color: rgba(245, 245, 245, 0.6);
+}
+
+#rightmove_input {
+  width: 100%;
+}
+
+#rightmove_submit {
+  width: 100%;
 }
 
 </style>
