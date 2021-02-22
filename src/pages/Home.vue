@@ -5,7 +5,7 @@
 
     <MainContent>
       <h1>Welcome to UniAccom</h1>
-      <p>Cool huh</p>
+      <p>Cool huh - {{this.$store.state.test}}</p>
     </MainContent>
     
   </div>
@@ -20,6 +20,9 @@ export default {
   components: {
     ImageTitle,
     MainContent
+  },
+  methods: {
+    
   }
 }
 
