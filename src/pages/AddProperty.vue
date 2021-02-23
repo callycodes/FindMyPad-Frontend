@@ -70,11 +70,11 @@
    
   </b-row>
           <b-card-text class="m-3">
-            <h1 class="fc-montserrat">{{foundProperty.location.display}}</h1>
+            <h1 class="fc-montserrat">{{foundProperty.name}}</h1>
 
             <b-row>
               <b-col cols="12">
-                <h2 class="fc-raleway">{{foundProperty.prices.monthly}} / {{foundProperty.prices.weekly}}</h2>
+                <h2 class="fc-raleway">{{foundProperty.monthly_price}} / {{foundProperty.weekly_price}}</h2>
               </b-col>
             </b-row>
 
@@ -84,7 +84,7 @@
               </b-col>
 
                <b-col cols="6">
-                <b-button class="float-left" variant="success" size="lg">Save</b-button>
+                <b-button @click="save" class="float-left" variant="success" size="lg">Save</b-button>
               </b-col>
             </b-row>
 
@@ -126,8 +126,16 @@ export default {
           } else {
             console.log(response.data)
             this.foundProperty = response.data
+            this.foundProperty.user_id = this.$store.state.user.id
           }
         });
+    },
+    async save () {
+      const response = await this.axios.post("http://127.0.0.1:5000/properties", 
+      this.foundProperty)
+      const data = await response.data;
+      console.log(data)
+      
     },
     goBack: function () {
       this.foundProperty = null

@@ -21,8 +21,20 @@
       <template #footer>
        <div id="nav-footer" class="d-flex text-light px-3 py-2">
         
-        <b-button class="w-25 mr-2" size="md">Login</b-button>
-        <b-button class="w-25" size="md">Register</b-button>
+        <div class="d-flex w-100" v-if="$store.state.user">
+          <b-list-group class="w-100">
+      <b-list-group-item variant="dark" class="d-flex align-items-center">
+        <b-avatar class="mr-3"></b-avatar>
+        <span class="mr-auto">{{$store.state.user.name}}</span>
+        <b-button class="w-25 mr-2" size="md" @click="logout">Logout</b-button>
+      </b-list-group-item>
+      </b-list-group>
+        </div>
+
+        <div class="d-flex w-100" v-else>
+        <b-button class="w-25 mr-2" size="md"><router-link :to="'/login'">Login</router-link></b-button>
+        <b-button class="w-25" size="md"><router-link :to="'/register'">Register</router-link></b-button>
+        </div>
        </div>
       </template>
     </b-sidebar>
@@ -43,6 +55,9 @@ export default {
     toggleSidebar: function() {
       this.shown = !this.shown;
       console.log('Toggled');
+    },
+    logout: function () {
+      this.$store.dispatch('logoutUser')
     }
   },
   data () {
@@ -102,6 +117,11 @@ export default {
   color: var(--gainsboro);
   text-decoration: none;
 }
+
+button a {
+  color: var(--gainsboro);
+  text-decoration: none;
+} 
 
 .nav-list li .router-link-exact-active {
   color: var(--ming);
