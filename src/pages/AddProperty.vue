@@ -122,7 +122,11 @@ export default {
         .then((response) => {
           this.$store.state.loading = false
           if (response.data.error) {
-            console.error('error')
+            this.$bvToast.toast(response.data.error, {
+              title: `Error!`,
+              variant: 'danger',
+              solid: true
+            })
           } else {
             console.log(response.data)
             this.foundProperty = response.data
@@ -134,7 +138,19 @@ export default {
       const response = await this.axios.post("http://127.0.0.1:5000/properties", 
       this.foundProperty)
       const data = await response.data;
-      console.log(data)
+      if (data.message == 'success') {
+        this.$bvToast.toast(data.response, {
+          title: `Property Added!`,
+          variant: 'success',
+          solid: true
+        })
+      } else {
+        this.$bvToast.toast(data.error, {
+          title: `Error!`,
+          variant: 'danger',
+          solid: true
+        })
+      }
       
     },
     goBack: function () {

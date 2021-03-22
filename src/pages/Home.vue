@@ -5,7 +5,7 @@
 
     <MainContent>
       <h1>Welcome to UniAccom</h1>
-      <p>Cool huh - {{this.$store.state.test}}</p>
+      <p>content will go here</p>
     </MainContent>
     
   </div>

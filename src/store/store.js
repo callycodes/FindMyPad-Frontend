@@ -22,7 +22,6 @@ export default new Vuex.Store({
     },
   
     actions: {
-  
       setUser(store, value) {
         store.commit('SET_USER', value)
       },

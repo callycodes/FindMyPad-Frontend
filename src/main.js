@@ -7,6 +7,8 @@ import VueAxios from 'vue-axios'
 
 import router from './router'
 
+import * as VueGoogleMaps from 'vue2-google-maps'
+
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -15,6 +17,13 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 
 Vue.use(VueAxios, axios)
+
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: 'AIzaSyCxDmQmRHIzBcyb--l2UOhsCj07sItNYjo',
+    libraries: 'places, drawing'
+  }
+})
 
 Vue.config.productionTip = false
 
