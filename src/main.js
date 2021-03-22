@@ -13,6 +13,8 @@ import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
+const config = require('./config.js');
+
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 
@@ -20,7 +22,7 @@ Vue.use(VueAxios, axios)
 
 Vue.use(VueGoogleMaps, {
   load: {
-    key: 'AIzaSyCxDmQmRHIzBcyb--l2UOhsCj07sItNYjo',
+    key: config.getGoogleMapsApiKey(),
     libraries: 'places, drawing'
   }
 })
