@@ -74,7 +74,7 @@
 
             <b-row>
               <b-col cols="12">
-                <h2 class="fc-raleway">{{foundProperty.monthly_price}} / {{foundProperty.weekly_price}}</h2>
+                <h2 class="fc-raleway">{{foundProperty.monthly_price}} / {{foundProperty.weekly_price}} // {{foundProperty.sale_price}}</h2>
               </b-col>
             </b-row>
 

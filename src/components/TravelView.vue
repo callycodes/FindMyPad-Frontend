@@ -109,8 +109,9 @@ this.axios.get("https://api.tfl.gov.uk/Journey/JourneyResults/NW1%201BD/to/51.50
 <style scoped>
 
 .travel-view-container {
-  height: 420px;
+  height: 380px;
 }
+
 .method-title {
   border: 1px black solid;
   font-size: 16px;
@@ -118,6 +119,7 @@ this.axios.get("https://api.tfl.gov.uk/Journey/JourneyResults/NW1%201BD/to/51.50
   width: 70%;
   margin-right: 5px;
 }
+
 .method-title img {
   height: 18px;
 }
@@ -147,7 +149,7 @@ this.axios.get("https://api.tfl.gov.uk/Journey/JourneyResults/NW1%201BD/to/51.50
 }
 
 .information-title {
-  font-size: 3vw;
+  font-size: 2vw;
 }
 
 </style>

@@ -5,14 +5,9 @@
       <b-row no-gutters class="mb-3">
 
         <b-col md="12" lg="3" class="mb-3 mb-md-3">
-          <b-card class="h-100 mr-0 mr-md-3">
-<p>{{getTravelViewRendered}}</p>
-            <div v-if="selected_property" id="more-info-container">
-                <h1>{{selected_property.name}}</h1>
-                
-                <b-button @click="deselectProperty" class="back-to-sort-btn">
-                  Back to Sort</b-button>
-                </div>
+          <b-card class="h-100 mr-0 mr-md-3 p-0">
+            <PropertySelectedTab class="p-0" v-if="selected_property" :property="selected_property" @unselect="deselectProperty">
+            </PropertySelectedTab>
 
               <div v-else id="sorting-container">
                 <h1>Sort</h1>
@@ -131,62 +126,9 @@
 
   <b-list-group-item :variant="p.isVisible ? '' : 'secondary'" :key="index" v-for="(p, index) in getProperties" class="flex-column align-items-start p-3">
     
-    <b-row>
-      <b-col cols="2">
-    <b-carousel
-    class="property-carousel"
-      id="image-carousel"
-      :interval="0"
-      controls
-      indicators
-    >
+    <PropertyListItem :property="p" :index="index" :drive="driving_routes[index]" :walk="walking_routes[index]" :cycle="cycling_routes[index]" :transit="transit_routes[index]"
+    @select="setSelectedProperty" @like="toggleLikeProperty" @remove="removeProperty" @zoom="zoomToProperty"></PropertyListItem>
 
-    <b-carousel-slide v-for="image in p.images" :key="image.order" fluid :img-src="image.url"></b-carousel-slide>
-
-          </b-carousel>
-
-</b-col>
-
-<b-col cols="7">
-    <div class="d-flex w-100 justify-content-between">
-      <h5 class="mb-1 font-raleway fw-900">{{p.name}}</h5>
-      <b-icon class="icon" @click="toggleLikeProperty(index)" color="red" :icon="p.liked ? 'heart-fill' : 'heart'" style="width: 30px; height: 30px;"></b-icon>
-      <!--<small>Imported on: {{new Date(p.imported_on).toLocaleDateString()}}</small>-->
-    </div>
-
-    <p class="icons">
-      <b-img src="./assets/img/svg/pound-sterling.svg"></b-img>
-                <span class="font-montserrat">£{{p.monthly_price}}pcm <small>£{{p.weekly_price}}pw</small></span>
-      <b-img src="./assets/img/svg/bed.svg"></b-img>
-                <span class="font-montserrat">{{p.bedrooms}}</span>
-                <b-img src="./assets/img/svg/bath-tub.svg"></b-img>
-                <span class="font-montserrat">{{p.bathrooms}}</span>
-                <b-img v-if="p.type != 'UNKNOWN'" src="./assets/img/svg/home.png"></b-img>
-                <span v-if="p.type != 'UNKNOWN'" class="font-montserrat">{{p.type}}</span>
-    </p>
-
-<br>
-    <p class="transport-icons">
-<b-img src="./assets/img/svg/bike.svg"></b-img>
-                <span v-if="cycling_routes[index]" class="font-montserrat">{{cycling_routes[index].duration.text}}</span>
-                <b-img src="./assets/img/svg/pedestrian-man.svg"></b-img>
-                <span v-if="walking_routes[index]" class="font-montserrat">{{walking_routes[index].duration.text}}</span>
-                <b-img src="./assets/img/svg/steering-wheel.svg"></b-img>
-                <span v-if="driving_routes[index]" class="font-montserrat">{{driving_routes[index].duration.text}}</span>
-                <b-img src="./assets/img/svg/train.svg"></b-img>
-                <span v-if="transit_routes[index]" class="font-montserrat">{{transit_routes[index].duration.text}}</span>
-      </p>
-
-
-</b-col>
-
-<b-col class="property-buttons" cols="3">
-<b-button squared class="w-100 font-montserrat" variant="outline-primary">View on Rightmove</b-button>
-<b-button squared class="w-100 font-montserrat" @click="setSelectedProperty(p); zoomToProperty(p)" variant="outline-secondary">View on Map</b-button>
-<b-button squared class="w-100 font-montserrat" @click="removeProperty(index)" variant="outline-danger">Remove</b-button>
-</b-col>
-
-    </b-row>
   </b-list-group-item>
 </b-skeleton-wrapper>
   
@@ -205,12 +147,16 @@ import TravelView from '../components/TravelView'
 import {gmapApi} from 'vue2-google-maps'
 import Vue from 'vue'
 import DirectionsRenderer from '../components/DirectionsRenderer.js'
+import PropertyListItem from '../components/properties/PropertyListItem'
+import PropertySelectedTab from '../components/properties/PropertySelectedTab'
 
 export default {
   components: {
     MainContent,
     TravelView,
-    DirectionsRenderer
+    DirectionsRenderer,
+    PropertyListItem,
+    PropertySelectedTab
   },
   computed: {
     google: gmapApi,
@@ -232,6 +178,12 @@ export default {
   },
 
   methods: {
+    getNearbyPlaces() {
+
+    },
+    toggleNearbyPlaces() {
+
+    },
     getSelectedPropertyPosition() {
       if (this.getSelectedProperty()) {
         return {
@@ -343,19 +295,27 @@ export default {
     },
 
     removeProperty(index) {
-      if (this.selected_property.name == this.properties[index].name) {
+
+      //If a property is selected, check if deleted property is selected, if so, deselect
+      //and reset map bounds.
+      if (this.selected_property && this.selected_property.name == this.properties[index].name) {
         this.setSelectedProperty(null);
+        this.resetBounds();
       }
 
-      this.$bvToast.toast('We have removed ' + this.properties[index].name, {
+      //Send delete request, on completion, toast user and remove from properties array
+      this.axios.delete("http://127.0.0.1:5000/properties/" + this.properties[index].id).then(() => {
+        this.$bvToast.toast('We have removed ' + this.properties[index].name, {
           title: `Property Removed`,
           variant: 'success',
           solid: true
         });
 
       this.properties.splice(index, 1);
+      });
       
-        this.resetBounds();
+      
+        
     },
     resetBounds() {
       this.$gmapApiPromiseLazy().then(() => {
@@ -397,7 +357,7 @@ export default {
     },
     async zoomToProperty(property) {
       //this.prioritiseProperty(index);
-      
+      console.log('Zooming event: ' + property.name)
       this.$refs.googleMapsElement.panTo({lat: property.latitude,
       lng: property.longitude});
       console.log('ozomed to property');
@@ -529,8 +489,10 @@ this.$nextTick(() => {
     
   },
   watch: {
+
+    //When selected_property is changed, property has been click/selected, or deselected, so render
+    //travel tab according to current value.
     selected_property: function (val) {
-      console.log('Selected Propety watched changed to: ' + val)
       if (val != null) {
         
         this.renderTravelView();
@@ -540,6 +502,7 @@ this.$nextTick(() => {
     }
   },
   mounted () {
+    //Start global loading animation
 this.$store.state.loading = true
 
 this.$gmapApiPromiseLazy().then(() => {
@@ -659,44 +622,6 @@ this.$gmapApiPromiseLazy().then(() => {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-#more-info-container h1 {
-  font-size: 25px;
-}
-
-.list-group-item .icons {
-  display: inline-block;
-}
-
-.list-group-item .icons span {
-  margin-right: 20px;
-}
-
-.list-group-item .icons img {
-  width: 24px;
-  height: 24px;
-  margin-right: 5px;
-}
-
-.list-group-item .transport-icons {
-  display: inline-block;
-  margin-bottom: 0px;
-}
-
-.list-group-item .transport-icons span {
-  margin-right: 20px;
-}
-
-.list-group-item .transport-icons img {
-  width: 24px;
-  height: 24px;
-  margin-right: 5px;
-}
-
-.property-buttons .btn {
-  padding: 4px;
-  margin-bottom: 5px;
-}
-
 .map-legend {
   width: 30px;
   height: 30px;
@@ -740,13 +665,6 @@ this.$gmapApiPromiseLazy().then(() => {
   border: none;
 }
 
-.back-to-sort-btn {
-  position: absolute;
-  bottom: 0px;
-  left: 0px;
-  width: 100%;
-  border-top-left-radius: 0px;
-  border-top-right-radius: 0px;
-}
+
 
 </style>

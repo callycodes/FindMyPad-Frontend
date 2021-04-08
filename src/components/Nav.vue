@@ -2,7 +2,7 @@
   <div id="nav">
 
     <b-button id="toggle-sidebar-btn" @click="toggleSidebar">Toggle Sidebar</b-button>
-  <b-sidebar :no-close-on-route-change="true" width="400px" :visible="shown" id="nav-sidebar" title="Sidebar" no-header>
+  <b-sidebar :no-close-on-route-change="true" width="350px" :visible="shown" id="nav-sidebar" title="Sidebar" no-header>
       <div id="nav-sidebar">
         <div class="nav-logo">
            <b-icon class="icon" icon="house-door" style="width: 150px; height: 150px;"></b-icon>
