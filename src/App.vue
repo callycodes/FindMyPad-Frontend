@@ -76,7 +76,7 @@ export default {
 }
 
 #app {
-  margin-left: 350px;
+  margin-left: 300px;
   transition: transform 1s;
 }
 

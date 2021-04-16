@@ -80,6 +80,7 @@ export default {
       this.$emit('like', index);
     },
     select(property) {
+      window.scrollTo({top: 0, behavior: 'smooth'});
       this.$emit('select', property);
     },
     zoom(property) {

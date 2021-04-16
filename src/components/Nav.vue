@@ -2,7 +2,7 @@
   <div id="nav">
 
     <b-button id="toggle-sidebar-btn" @click="toggleSidebar">Toggle Sidebar</b-button>
-  <b-sidebar :no-close-on-route-change="true" width="350px" :visible="shown" id="nav-sidebar" title="Sidebar" no-header>
+  <b-sidebar :no-close-on-route-change="true" width="300px" :visible="shown" id="nav-sidebar" title="Sidebar" no-header>
       <div id="nav-sidebar">
         <div class="nav-logo">
            <b-icon class="icon" icon="house-door" style="width: 150px; height: 150px;"></b-icon>
@@ -23,17 +23,17 @@
         
         <div class="d-flex w-100" v-if="$store.state.user">
           <b-list-group class="w-100">
-      <b-list-group-item variant="dark" class="d-flex align-items-center">
-        <b-avatar class="mr-3"></b-avatar>
-        <span class="mr-auto">{{$store.state.user.name}}</span>
-        <b-button class="w-25 mr-2" size="md" @click="logout">Logout</b-button>
+      <b-list-group-item style="background-color: gray" border-variant="dark" class="d-flex align-items-center">
+        <b-avatar variant="dark" class="mr-3"></b-avatar>
+        <span class="mr-auto font-raleway">{{$store.state.user.name}}</span>
+        <b-button variant="dark" size="md" @click="logout">Logout</b-button>
       </b-list-group-item>
       </b-list-group>
         </div>
 
         <div class="d-flex w-100" v-else>
-        <b-button class="w-25 mr-2" size="md"><router-link :to="'/login'">Login</router-link></b-button>
-        <b-button class="w-25" size="md"><router-link :to="'/register'">Register</router-link></b-button>
+        <b-button class="w-50 mr-2" variant="dark" size="md"><router-link :to="'/login'">Login</router-link></b-button>
+        <b-button class="w-50" size="md"><router-link :to="'/register'">Register</router-link></b-button>
         </div>
        </div>
       </template>

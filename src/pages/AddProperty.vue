@@ -2,25 +2,22 @@
   <div id="add-property-page">
     <ImageFull>
       <MainContent class="main-content">
-        <b-button-group v-show="!foundProperty" class="import-buttons" size="lg">
-          <b-button variant="info">
-            <img src="assets/img/logos/rightmove.png" />
-          </b-button>
-          <b-button variant="purple">
-            <img src="assets/img/logos/zoopla.png" />
-          </b-button>
-          <b-button variant="light">
-            <span class="font-raleway">Manual</span>
-          </b-button>
-        </b-button-group>
+        
 
-        <b-card v-show="!foundProperty"
-          id="rightmove-container"
-          border-variant="light"
-          class="text-center"
+        <!-- Import property card -->
+        <b-card v-if="state == 'start'"
+          id="search-container"
+          border-variant="dark"
+          
+          class="text-center mt-5 mx-auto"
         >
+
+        
           <b-container class="w-100">
-            <b-form inline>
+
+            <h2 class="font-raleway">Add Property</h2>
+            <span class="font-montserrat">Simple paste your Rightmove or Zoopla property URL in the box below and press Import.</span>
+            <b-form class="mt-4" inline>
               <b-row class="w-100">
                 <b-col cols="9">
                   <b-form-input
@@ -43,13 +40,24 @@
                 </b-col>
               </b-row>
             </b-form>
+
+            <b-row class="mt-4">
+              <b-col cols="6">
+                <b-img class="mt-4 w-50" src="./assets/img/logos/rightmove.png" rounded/>
+              </b-col>
+              <b-col cols="6">
+                <b-img class="w-50" src="./assets/img/logos/zoopla.png" rounded/>
+              </b-col>
+            </b-row>
+
           </b-container>
         </b-card>
 
-        <b-card v-if="foundProperty"
+        <!-- Found property card -->
+        <b-card v-if="state == 'save'"
           id="result-container"
-          border-variant="light"
-          class="text-center m-5" 
+          border-variant="dark"
+          class="text-center mx-auto m-5" 
         >
 
         <b-row no-gutters>
@@ -61,7 +69,7 @@
       indicators
     >
 
-    <b-carousel-slide v-for="image in foundProperty.images" :key="image.order" fluid :img-src="image.url"></b-carousel-slide>
+    <b-carousel-slide v-for="(image, index) in foundProperty.images" :key="index" fluid :img-src="image.url"></b-carousel-slide>
 
           </b-carousel>
         </b-row>
@@ -74,7 +82,8 @@
 
             <b-row>
               <b-col cols="12">
-                <h2 class="fc-raleway">{{foundProperty.monthly_price}} / {{foundProperty.weekly_price}} // {{foundProperty.sale_price}}</h2>
+                <h2 v-if="foundProperty.transaction_type == 'BUY'" class="fc-raleway">£{{foundProperty.sale_price}}</h2>
+                <h2 v-else class="fc-raleway">£{{foundProperty.monthly_price}}pcm / {{foundProperty.weekly_price}}pw</h2>
               </b-col>
             </b-row>
 
@@ -90,6 +99,15 @@
 
           </b-card-text>
       
+        </b-card>
+
+        <b-card v-if="state == 'complete'"
+          id="complete-container"
+          border-variant="dark"
+          class="text-center mx-auto" 
+        >
+        <h1 class="fc-montserrat">It's in!</h1>
+        <span class="font-montserrat">We found the property you are interested in and imported all of its details onto the site! There is nothing else for you to do, however, you can add another property by clicking <a @click="state = 'start'; foundProperty = null;">here</a> or you can visit <a><router-link to="/properties">Your Properties</router-link></a></span>
         </b-card>
 
 
@@ -110,15 +128,22 @@ export default {
   data() {
     return {
       url: "",
-
-      foundProperty: null,
+      slide: null,
+      state: 'start',
+      foundProperty: null
     };
   },
   methods: {
     async submit() {
       this.$store.state.loading = true
+
+      let component = 'rightmove';
+      if (this.url.includes('zoopla.co.uk')) {
+        component = 'zoopla'
+      }
+
       await this.axios
-        .get("http://127.0.0.1:5000/rightmove?url=" + this.url)
+        .get("http://127.0.0.1:5000/" + component + "?url=" + this.url)
         .then((response) => {
           this.$store.state.loading = false
           if (response.data.error) {
@@ -131,6 +156,7 @@ export default {
             console.log(response.data)
             this.foundProperty = response.data
             this.foundProperty.user_id = this.$store.state.user.id
+            this.state = 'save';
           }
         });
     },
@@ -144,6 +170,9 @@ export default {
           variant: 'success',
           solid: true
         })
+        this.state = 'complete';
+
+        this.$store.dispatch('sendConfetti', this.$confetti)
       } else {
         this.$bvToast.toast(data.error, {
           title: `Error!`,
@@ -154,7 +183,7 @@ export default {
       
     },
     goBack: function () {
-      this.foundProperty = null
+      this.state = 'start';
     }
   },
 };
@@ -168,6 +197,10 @@ export default {
 
 .main-content {
   text-align: center;
+}
+
+#image-carousel {
+
 }
 
 .btn-purple {
@@ -191,8 +224,13 @@ button img {
   width: 50%;
 }
 
-#rightmove-container {
-  background-color: rgba(245, 245, 245, 0.6);
+#result-container {
+  width: 60%;
+}
+
+#search-container {
+  background-color: white;
+  width: 60%;
 }
 
 #rightmove_input {
@@ -202,4 +240,14 @@ button img {
 #rightmove_submit {
   width: 100%;
 }
+
+#complete-container {
+  width: 60%;
+  margin-top: 20%;
+}
+
+#complete-container a {
+  color: blue;
+}
+
 </style>

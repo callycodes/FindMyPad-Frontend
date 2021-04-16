@@ -22,7 +22,7 @@ export default {
       if (this.image) {
         return this.image
       } else {
-        return "./assets/img/headers/pexels-mike-463996.jpg";
+        return "./assets/img/background/gray_map.png";
       }
     },
     styleObject () {
@@ -46,7 +46,7 @@ export default {
 
 .title-container {
   text-align: left;
-  padding-top: 350px;
+  padding-top: 300px;
   width: 60%;
   text-align: center;
 }

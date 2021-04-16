@@ -4,17 +4,24 @@
     <ImageTitle title="Settings"  />
 
     <MainContent>
+
+
+      <b-card
+          id="search-container"
+          border-variant="dark"
+          
+          class="text-center mt-5 mx-auto"
+        >
       <h1>Where do you Study/Work?</h1>
 
-       <b-form class="mt-5 mb-3 clearfix">
-      <b-form-input size="lg" class="float-left mb-0 mt-0 mr-3 w-50"  ref="autocomplete" v-model="location" placeholder="Start typing an address here and then click Find" list="address-recommendations"></b-form-input>
+       <b-form class="d-flex mt-4 mb-3 clearfix">
+      <b-form-input size="lg" class="float-left mb-0 mt-0 mr-3"  ref="autocomplete" v-model="location" placeholder="Start typing an address here and then click Find" list="address-recommendations"></b-form-input>
       <datalist id="address-recommendations">
         <option :key="index" v-for="(address, index) in searchResults">{{ address }}</option>
     </datalist>
 
-    <b-button size="lg" class="mb-0 mt-0" @click="geocode" variant="secondary">Find</b-button>
+    <b-button size="lg" class="w-25" @click="geocode" variant="secondary">Find</b-button>
 
-    <b-button size="lg" class="float-right" @click="saveLocation" variant="success">Save Location</b-button>
        </b-form>
 
       <GmapMap
@@ -25,9 +32,7 @@
   :center="{lat: selected_location.lat, lng: selected_location.lng}"
 >
 
-<div class="map-legend">
-
-  </div>
+<b-button slot="visible" size="lg" class="save-location-button" @click="saveLocation" variant="success">Save Location</b-button>
 
 <GmapMarker
     ref="studyMarker"
@@ -45,6 +50,8 @@
 
 
 </GmapMap>
+
+      </b-card>
 
     </MainContent>
     
@@ -79,8 +86,8 @@ export default {
       {
         study_latitude: this.selected_location.lat,
         study_longitude: this.selected_location.lng,
-      }).then(response => {
-        console.log(response);
+      }).then(() => {
+        this.$store.dispatch('sendConfetti', this.$confetti)
       });
     },
     geocode() {
@@ -169,7 +176,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.save-btn {
-  float: right;
+.save-location-button {
+  width: 200px;
+  bottom: 10px;
+  left: 10px;
+  position: absolute;
 }
+
 </style>

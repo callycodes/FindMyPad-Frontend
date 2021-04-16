@@ -20,7 +20,7 @@ export default {
       if (this.image) {
         return this.image
       } else {
-        return "./assets/img/headers/pexels-mike-463996.jpg";
+        return "./assets/img/background/gray_map.png";
       }
     },
     styleObject () {

@@ -7,6 +7,8 @@ import VueAxios from 'vue-axios'
 
 import router from './router'
 
+import VueConfetti from 'vue-confetti'
+
 import * as VueGoogleMaps from 'vue2-google-maps'
 
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
@@ -17,7 +19,7 @@ const config = require('./config.js');
 
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
-
+Vue.use(VueConfetti)
 Vue.use(VueAxios, axios)
 
 Vue.use(VueGoogleMaps, {

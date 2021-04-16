@@ -16,12 +16,22 @@ export default new Vuex.Store({
       LOGOUT_USER(state) {
         localStorage.removeItem('user');
         state.user = null
+      },
+      SEND_CONFETTI(state, plugin) {
+        plugin.start();
+        setTimeout(() => {
+          plugin.stop();
+        }, 2000);
       }
     },
     getters: {
     },
   
     actions: {
+      sendConfetti(store, plugin) {
+        console.log(plugin);
+        store.commit('SEND_CONFETTI', plugin)
+      },
       setUser(store, value) {
         store.commit('SET_USER', value)
       },
