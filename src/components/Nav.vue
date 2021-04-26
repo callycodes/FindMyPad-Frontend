@@ -6,14 +6,13 @@
       <div id="nav-sidebar">
         <div class="nav-logo">
            <b-icon class="icon" icon="house-door" style="width: 150px; height: 150px;"></b-icon>
-           <h1 class="text">UniAccom</h1>
+           <h1 class="text">FindMyPad</h1>
         </div>
 
         <ul class="nav-list">
-          <li><router-link :to="'/'">Home</router-link></li>
-          <li><router-link :to="'/add'">Add Property</router-link></li>
-          <li><router-link :to="'/properties'">My Properties</router-link></li>
-          <li><router-link :to="'/settings'">Settings</router-link></li>
+          <li v-for="link in getNavLinks()" :key="link.name">
+            <router-link :to="link.path">{{link.name}}</router-link>
+          </li>
         </ul>
 
       </div>
@@ -58,11 +57,54 @@ export default {
     },
     logout: function () {
       this.$store.dispatch('logoutUser')
+    },
+    getNavLinks() {
+      let links = []
+      this.links.forEach((link) => {
+        if (link.role.length == 0) {
+          links.push(link);
+        } else {
+          if (this.$store.state.user) {
+            if (link.role.includes(this.$store.state.user.role)) {
+              links.push(link);
+            }
+          }
+        }
+      })
+      return links;
     }
   },
   data () {
     return {
-      shown: true
+      shown: true,
+
+      links: [
+        {
+          path: '/',
+          name: 'Home',
+          role: []
+        },
+        {
+          path: '/add',
+          name: 'Add Property',
+          role: ['student', 'realtor']
+        },
+        {
+          path: '/properties',
+          name: 'My Properties',
+          role: ['student']
+        },
+        {
+          path: '/portfolio',
+          name: 'Portfolio',
+          role: ['realtor']
+        },
+        {
+          path: '/settings',
+          name: 'Settings',
+          role: ['student']
+        }
+      ]
     }
   },
   mounted () {

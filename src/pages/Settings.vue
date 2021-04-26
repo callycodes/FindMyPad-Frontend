@@ -53,6 +53,28 @@
 
       </b-card>
 
+
+
+      <b-card
+          id="search-container"
+          border-variant="dark"
+          
+          class="text-center mt-5 mx-auto"
+        >
+      <h1>Your Profile</h1>
+
+       <b-form class="d-flex mt-4 mb-3 clearfix">
+      <b-form-input size="lg" class="float-left mb-0 mt-0 mr-3" v-model="name"></b-form-input>
+  
+
+    <b-button size="lg" class="w-25" @click="saveProfile" variant="success">Save</b-button>
+
+       </b-form>
+
+      </b-card>
+
+
+    <h4 class="font-raleway">Nothing to see down here...</h4>
     </MainContent>
     
   </div>
@@ -81,6 +103,17 @@ export default {
       }
     },
   methods: {
+    saveProfile() {
+      this.axios.put("http://127.0.0.1:5000/users/" + this.$store.state.user.id, 
+      {
+        name: this.name
+      }).then(() => {
+        this.$store.dispatch('sendConfetti', this.$confetti)
+      });
+
+      this.$store.state.user.name = this.name;
+      this.$store.dispatch('setUser', this.$store.state.user)
+    },
     saveLocation() {
       this.axios.put("http://127.0.0.1:5000/users/" + this.$store.state.user.id, 
       {
@@ -142,6 +175,7 @@ export default {
           lng: 0,
         name: ''
       },
+      name: this.$store.state.user.name,
       location: '',
       searchResults: [],
       service: null,
@@ -183,4 +217,8 @@ export default {
   position: absolute;
 }
 
+h4 {
+  margin-top: 100px;
+  color: rgba(0, 0, 0, 0.2)
+}
 </style>

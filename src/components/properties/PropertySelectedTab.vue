@@ -1,32 +1,26 @@
 <template>
 <div id="selected-tab">
 
-  <b-row no-gutters>
+  <b-row class="property-top-container" no-gutters>
     <b-col cols="10">
-  <h1>{{property.name}}</h1>
+  <h1 class="property-title">{{property.name}}</h1>
     </b-col>
 
-    <b-col cols="2">
+    <b-col class="mt-3" cols="2">
       <b-icon class="icon" @click="property.liked = !property.liked; $emit('like', property);" color="red" :icon="property.liked ? 'heart-fill' : 'heart'" style="width: 30px; height: 30px;"></b-icon>
     </b-col>
   </b-row>
 
   <b-row no-gutters class="property-info mb-2">
 
-<b-col cols="8">
-              <b-row>
+<b-col class="d-flex" cols="6">
 
-                <b-col cols="2">
                 <inline-svg src="./assets/img/svg/pound-sterling.svg"></inline-svg>
-                </b-col>
-                <b-col>
                 <span v-if="property.transaction_type == 'BUY'" class="font-montserrat">£{{property.sale_price}}</span>
                 <div class="rent" v-else>
                   <span class="font-montserrat">£{{property.monthly_price}}pcm </span>
                   <small class="font-montserrat">£{{property.weekly_price}}pw</small>
                   </div>
-                </b-col>
-              </b-row>
      </b-col>
       
 <b-col cols="2">
@@ -40,9 +34,59 @@
                  </b-col>
     </b-row>
 
+<br>
 
 
-    <div v-if="property.stations.length > 0" class="nearby-stations">
+  <div class="d-flex">
+  <div @click="showImages" class="image-btn-container">
+    <span class="font-raleway image-btn-text">Images ({{property.images.length}})</span>
+    <b-img fluid rounded :src="property.images[0].url">
+      
+    </b-img>
+  </div>
+
+    <div class="property-button-container">
+      <b-button v-if="selectedOption == 'info'" @click="selectedOption = 'stations'" squared class="font-montserrat" variant="dark"><inline-svg src="./assets/img/svg/train.svg"></inline-svg> Stations</b-button>
+      <b-button v-else @click="selectedOption = 'info'" squared class="font-montserrat" variant="dark"><inline-svg src="./assets/img/svg/information.svg"></inline-svg> Info</b-button>
+      
+    <b-button @click="showFeatures" squared class="font-montserrat" variant="dark"><inline-svg src="./assets/img/svg/list.svg"></inline-svg> Features</b-button>
+    </div>
+
+  </div>
+
+
+  <br>
+
+  <div class="d-flex">
+  <div @click="showImages" class="image-btn-container realtor-btn-container">
+    
+    <b-img fluid rounded :src="property.realtor.logo">
+      
+    </b-img>
+  </div>
+
+    <div class="realtor-button-container">
+      <b-form inline>
+      <!--
+        No need for the website button currently as site doesnt store a url 
+        <b-button @click="openURL(property.realtor." squared class="d-flex font-montserrat" variant="dark"><inline-svg src="./assets/img/svg/internet.svg"></inline-svg> Website</b-button>-->
+      <b-button @click="openTelephoneURL(property.realtor.phone)" squared class="d-flex font-montserrat" variant="dark"><inline-svg src="./assets/img/svg/call.svg"></inline-svg> Phone</b-button>
+     </b-form>
+     </div>
+
+  </div>
+
+  <br>
+
+<div class="property-info-container" v-if="selectedOption == 'info'">
+<h2>Information</h2>
+  <span v-if="property.let_available"><inline-svg src="./assets/img/svg/calendar.svg"></inline-svg><b>Let available:</b> {{property.let_available}}<br></span>
+  <span v-if="property.furnished"><inline-svg src="./assets/img/svg/armchair.svg"></inline-svg><b>Furnished:</b> {{property.furnished}}<br></span>
+  <span v-if="property.let_type"><inline-svg src="./assets/img/svg/clock.svg"></inline-svg><b>Let type:</b> {{property.let_type}}<br></span>
+  <span v-if="property.deposit && property.deposit > 0"><inline-svg src="./assets/img/svg/download.svg"></inline-svg><b>Deposit:</b> £{{property.deposit}}<br></span>
+</div>
+
+   <div v-else-if="property.stations.length > 0 && selectedOption == 'stations'" class="nearby-stations">
   <h2>Nearest Stations</h2>
   <div v-for="(station, index) in property.stations" :key="index" class="nearby-station-container">
     <b-row no-gutters>
@@ -59,39 +103,10 @@
   </div>
   </div>
 
-  
-<br>
-
-  <h2>Nearby Toggle</h2>
-  <div class="toggle-icons w-100">
-    <div class="d-flex justify-content-between">
-      <inline-svg @click="nearby('bank')" :class="toggled['bank'] ? 'toggled' : ''" src="./assets/img/icons/bank-building.svg"></inline-svg>
-      <inline-svg @click="nearby('worship')" :class="toggled['worship'] ? 'toggled' : ''" src="./assets/img/icons/pray.svg"></inline-svg>
-      <inline-svg @click="nearby('bar')" :class="toggled['bar'] ? 'toggled' : ''" src="./assets/img/icons/cocktail.svg"></inline-svg>
-      <inline-svg @click="nearby('cafe')" :class="toggled['cafe'] ? 'toggled' : ''" src="./assets/img/icons/coffee.svg"></inline-svg>
-      <inline-svg @click="nearby('gym')" :class="toggled['gym'] ? 'toggled' : ''" src="./assets/img/icons/fitness.svg"></inline-svg>
-    </div>
-
-    <div class="d-flex justify-content-between">
-      <inline-svg @click="nearby('park')" :class="toggled['park'] ? 'toggled' : ''" src="./assets/img/icons/park.svg"></inline-svg>
-      <inline-svg @click="nearby('pharmacy')" :class="toggled['pharmacy'] ? 'toggled' : ''" src="./assets/img/icons/pharmacy.svg"></inline-svg>
-      <inline-svg @click="nearby('food')" :class="toggled['food'] ? 'toggled' : ''" src="./assets/img/icons/restaurant.svg"></inline-svg>
-      <inline-svg @click="nearby('shops')" :class="toggled['shops'] ? 'toggled' : ''" src="./assets/img/icons/supermarket-cart-silhouette.svg"></inline-svg>
-      <inline-svg @click="nearby('laundry')" :class="toggled['laundry'] ? 'toggled' : ''" src="./assets/img/icons/washing-machine.svg"></inline-svg>
-    </div>
-
+  <div v-else>
+<h2>No nearby stations found</h2>
+<small>Unfortunately, {{property.imported_from}} couldn't provide this information</small>
   </div>
-
-<br>
-<br>
-
-  <b-button-group class="d-flex">
-    <b-button @click="showImages" squared class="font-montserrat" variant="outline-dark">Images</b-button>
-    <b-button @click="showFeatures" squared class="font-montserrat" variant="outline-dark">Features</b-button>
-  </b-button-group>
-
-  <b-button @click="toggleAmazon" squared class="font-montserrat w-100 amazon-button" variant="outline-dark">Toggle Amazon Lockers</b-button>
-  <b-button @click="toggleCycles" squared class="font-montserrat w-100 cycle-button" variant="outline-dark">Toggle Santander Cycles</b-button>
 
   <b-button @click="unselect" class="back-to-sort-btn">Back to Sort</b-button>
 </div>
@@ -112,22 +127,15 @@ export default {
     unselect() {
       this.$emit('unselect');
     },
-    nearby(type) {
-      this.toggled[type] = !this.toggled[type];
-
-      this.$emit('nearby', type, this.toggled[type]);
-    },
+    
     showImages() {
       this.$emit('showImages');
     },
     showFeatures() {
       this.$emit('showFeatures');
     },
-    toggleAmazon() {
-      this.$emit('toggleAmazon');
-    },
-    toggleCycles() {
-      this.$emit('toggleCycles');
+    openTelephoneURL(phone) {
+      this.$router.absoluteURL('tel:' + phone);
     }
     
 
@@ -136,7 +144,7 @@ export default {
   
   data() {
     return {
-      
+      selectedOption: 'info'
     }
   }
 }
@@ -144,8 +152,8 @@ export default {
 
 <style scoped>
 #selected-tab {
-  max-height: 550px;
-  height: 550px;
+  max-height: 600px;
+  height: 600px;
   padding-left: 20px;
   padding-right: 20px;
 }
@@ -177,19 +185,7 @@ export default {
   margin-bottom: 0px;
 }
 
-.toggle-icons svg {
-  width: 30px;
-  height: 30px;
-  fill: gray;
-}
 
-.toggle-icons div {
-  margin-bottom: 8px;
-}
-
-.toggled {
-  fill: black !important;
-}
 .nearby-station, .nearby-station-name, .nearby-station-distance {
   margin: 0px;
 }
@@ -208,10 +204,20 @@ export default {
   height: 20px;
 }
 
+.property-info {
+  background-color: black;
+
+  margin-left: -1.25rem;
+  margin-right: -1.25rem;
+  padding: 10px;
+  color: white;
+}
+
 .property-info svg {
   width: 20px;
   height: 20px;
   margin-right: 5px;
+  fill: white;
 }
 
 .property-info .rent small {
@@ -232,4 +238,98 @@ export default {
   text-decoration-thickness: 2px;
 }
 
+.realtor-btn-container {
+  width: 40% !important;
+}
+
+.image-btn-container {
+  width: 45%;
+
+transition: 1s;
+  transform:
+    perspective(75em)
+    rotateX(18deg);
+  box-shadow:
+    rgba(22, 31, 39, 0.42) 0px 60px 123px -25px,
+    rgba(19, 26, 32, 0.08) 0px 35px 75px -35px;
+  border-radius: 10px;
+  border: 1px solid;
+  border-color:
+    rgb(213, 220, 226)
+    rgb(213, 220, 226)
+    rgb(184, 194, 204);
+}
+
+.image-btn-container:hover {
+  transform: translate3d(0px, -5px, 0px);
+}
+
+.image-btn-text {
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  left: 0px;
+  color: white;
+  background-color: rgba(0, 0, 0, 1);
+  padding: 2px;
+  border-radius: 4px;
+  padding-left: 5px;
+}
+
+.property-button-container {
+  width: 50%;
+  margin-left: 15px;
+  margin-top: 5px;
+}
+
+.property-button-container button {
+  display: flex;
+  width: 100%;
+  background-color: black;
+  height: 45px;
+  line-height: 30px;
+  margin-bottom: 10px;
+}
+
+.realtor-button-container {
+  margin-left: 15px;
+  margin-top: 3px;
+}
+
+.realtor-button-container button {
+  display: flex;
+  height: 45px;
+  line-height: 30px;
+  background-color: black;
+  margin-right: 15px;
+}
+
+.property-button-container button svg {
+  margin-top: 5px;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  fill: white;
+}
+
+.realtor-button-container button svg {
+  margin-top: 5px;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  fill: white;
+}
+
+.property-top-container {
+  max-height: 70px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.property-info-container svg {
+  width: 20px;
+  height: 20px;
+  margin-top: -5px;
+  margin-right: 5px;
+}
 </style>

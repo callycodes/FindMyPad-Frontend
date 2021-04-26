@@ -107,7 +107,8 @@
           class="text-center mx-auto" 
         >
         <h1 class="fc-montserrat">It's in!</h1>
-        <span class="font-montserrat">We found the property you are interested in and imported all of its details onto the site! There is nothing else for you to do, however, you can add another property by clicking <a @click="state = 'start'; foundProperty = null;">here</a> or you can visit <a><router-link to="/properties">Your Properties</router-link></a></span>
+        <span class="font-montserrat" v-if="$store.state.user.role == 'realtor'">The property has been added to your portfolio! You can add another property by clicking <a @click="state = 'start'; foundProperty = null;">here</a> or you can visit your <a><router-link to="/portfolio">Portfolio</router-link></a></span>
+        <span class="font-montserrat" v-else>We found the property you are interested in and imported all of its details onto the site! There is nothing else for you to do, however, you can add another property by clicking <a @click="state = 'start'; foundProperty = null;">here</a> or you can visit <a><router-link to="/properties">Your Properties</router-link></a></span>
         </b-card>
 
 
@@ -161,8 +162,21 @@ export default {
         });
     },
     async save () {
-      const response = await this.axios.post("http://127.0.0.1:5000/properties", 
-      this.foundProperty)
+
+      let response = null;
+      let property = this.foundProperty;
+
+      if (this.$store.state.user.role == 'realtor') {
+        property.realtor_property = true;
+      } else {
+        property.realtor_property = false;
+      }
+
+      console.log(property)
+      
+      response = await this.axios.post("http://127.0.0.1:5000/properties", 
+      property)
+
       const data = await response.data;
       if (data.message == 'success') {
         this.$bvToast.toast(data.response, {
@@ -173,6 +187,7 @@ export default {
         this.state = 'complete';
 
         this.$store.dispatch('sendConfetti', this.$confetti)
+        this.url = ""
       } else {
         this.$bvToast.toast(data.error, {
           title: `Error!`,

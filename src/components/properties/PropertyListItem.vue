@@ -56,9 +56,11 @@
 </b-col>
 
 <b-col class="property-buttons" cols="3">
-<b-button squared class="w-100 font-montserrat" variant="outline-primary">View on Rightmove</b-button>
-<b-button squared class="w-100 font-montserrat" @click="select(property); zoom(property)" variant="outline-secondary">View on Map</b-button>
-<b-button squared class="w-100 font-montserrat" @click="remove(index)" variant="outline-danger">Remove</b-button>
+  <b-button @click="openURL(property.url)" v-if="property.imported_from == 'Zoopla'" rounded class="zoopla-btn w-100 font-montserrat" variant="primary">View on Zoopla</b-button>
+  <b-button @click="openURL(property.url)" v-else rounded class="w-100 font-montserrat" variant="primary">View on Rightmove</b-button>
+
+<b-button rounded class="w-100 font-montserrat select-on-map-btn" @click="select(property); zoom(property)" variant="secondary">Select on Map</b-button>
+<b-button rounded class="w-100 font-montserrat" @click="remove(index)" variant="danger">Remove</b-button>
 </b-col>
 
     </b-row>
@@ -89,6 +91,9 @@ export default {
     },
     remove(index) {
       this.$emit('remove', index);
+    },
+    openURL(url) {
+      this.$router.absoluteURL(url);
     }
 
   },
@@ -136,5 +141,20 @@ export default {
   padding: 4px;
   margin-bottom: 5px;
 }
+
+.select-on-map-btn {
+  background-color: black;
+}
+
+.zoopla-btn {
+  background-color: var(--zoopla);
+  color: white;
+}
+
+.zoopla-btn:hover {
+  color: white;
+  background-color: var(--zoopla);
+}
+
 
 </style>

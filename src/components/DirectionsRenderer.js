@@ -22,7 +22,6 @@ export default MapElementFactory({
   afterCreate() {
     let directionsService = new window.google.maps.DirectionsService();
 
-    console.log('after create')
     this.$watch(
       () => [this.origin, this.destination, this.travelMode, this.panel],
       () => {
@@ -32,14 +31,11 @@ export default MapElementFactory({
           this.renderer.set('directions', null);
         }
         if (!origin || !destination) {
-          console.log('something is null lol')
         return;
         }
 
         this.renderer.setMap(this.map);
         
-        console.log('origin: ' + origin)
-        console.log('destination: ' + destination)
         directionsService.route(
           {
             origin,
@@ -47,9 +43,7 @@ export default MapElementFactory({
             travelMode
           },
           (response, status) => {
-            console.log('Found directions: ' + status);
             if (status !== "OK") return;
-            console.log('Directions:  ' + response);
             this.renderer.setDirections(response);
             this.renderer.setPanel(panel);
           }

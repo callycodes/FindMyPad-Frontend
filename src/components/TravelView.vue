@@ -91,8 +91,6 @@ export default {
     }
   },
   mounted() {
-    //this.changeMode('DRIVING');
-    console.log('Travel View Mounted')
   },
   updated() {
 

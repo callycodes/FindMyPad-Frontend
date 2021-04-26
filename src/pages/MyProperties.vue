@@ -1,5 +1,8 @@
 <template>
-<div class="hello">
+<div class="my-properties">
+
+  <Advertisement v-if="showingAdvertisement" :study="study" :properties="properties" @add="addProperty" @close="showingAdvertisement = false"></Advertisement>
+
   <MainContent v-if="getProperties.length > 0 && study.lat != null">
 
     <b-row no-gutters class="mb-1">
@@ -7,7 +10,7 @@
       <b-col md="12" lg="4" class="mb-1 mb-md-1">
         <b-card class="h-100 mr-0 mr-md-3 p-0">
 
-          <PropertySelectedTab class="p-0" v-if="selected_property" :property="selected_property" :toggled="toggled" @like="updateProperty" @toggleCycles="gatherNearbyCycles()" @toggleAmazon="gatherNearbyLockers()" @showFeatures="selectedPropertyFeaturesWindow='mini'" @showImages="selectedPropertyWindow='mini'" @nearby="toggleNearbyPlaces" @unselect="deselectProperty"></PropertySelectedTab>
+          <PropertySelectedTab class="p-0" v-if="selected_property" :property="selected_property" @like="updateProperty" @showFeatures="selectedPropertyFeaturesWindow='mini'" @showImages="selectedPropertyWindow='mini'" @unselect="deselectProperty"></PropertySelectedTab>
 
           <div v-else id="sorting-container">
             <h1>Sort</h1>
@@ -19,16 +22,31 @@
 
             <label for="cycle_range">Max Cycling Time <b>{{sorting_properties.cycling_time}}mins</b></label>
             <b-form-input id="cycle_range" v-model="sorting_properties.cycling_time" @change="sortProperties('cycle_time')" type="range" step="1" :min="map_properties.travel_times.cycle.min" :max="map_properties.travel_times.cycle.max"></b-form-input>
+
+  <label class="font-raleway" for="type_selector">Property Type <b>({{propertyTypeSelected}})</b></label>
+            <b-form-radio-group
+      v-model="propertyTypeSelected"
+      :options="propertyTypeOptions"
+      @change="sortProperties('type')"
+      class="mb-3"
+      id="type_selector"
+      value-field="item"
+      text-field="name"
+    ></b-form-radio-group>
           </div>
 
         </b-card>
       </b-col>
 
       <b-col md="12" lg="8">
-        <GmapMap id="map" :center="{lat: 0, lng: 0}" ref="googleMapsElement" map-id="9d791aeaba4faec3" style="width: 100%; height: 590px" :options="map_options">
+        <GmapMap id="map" :center="{lat: 0, lng: 0}" ref="googleMapsElement" map-id="9d791aeaba4faec3" style="width: 100%; height: 640px" :options="map_options">
 
           <DirectionsRenderer v-show="travel_view_rendered" :travelMode="direction_options.mode" :origin="getSelectedPropertyPosition()" :destination="{ lat: study.lat, lng: study.lng}" :panel="this.$refs.direction_panel" :renderer="directionRenderer" :map="map" />
 
+          <Toggles v-show="travel_view_rendered" slot="visible" :toggled="toggledButtons" @toggleCycles="gatherNearbyCycles()" @toggleAmazon="gatherNearbyLockers()"></Toggles>
+
+          <Nearby v-if="travel_view_rendered" slot="visible" :toggled="toggled" @nearby="toggleNearbyPlaces"></Nearby>
+          
 
           <div v-if="selectedPropertyWindow" slot="visible" :class="[selectedPropertyWindow != 'full' ? 'mini' : '', 'selected-property-images']">
                 <div class="options">
@@ -59,7 +77,7 @@
                   <inline-svg v-else @click="selectedPropertyFeaturesWindow = 'full'" src="./assets/img/window/expand.svg"></inline-svg>
                 </div>
 
-              <div class="features d-flex w-100" style="overflow: scroll-y;">
+              <div class="features d-flex w-100">
                 <ul>
                   <li v-for="(feature, index) in selected_property.features" :key="index">{{feature.feature}}</li>
                 </ul>
@@ -180,6 +198,9 @@ import PropertyListItem from '../components/properties/PropertyListItem'
 import PropertySelectedTab from '../components/properties/PropertySelectedTab'
 import InlineSvg from 'vue-inline-svg';
 import ImageFull from "../components/layouts/ImageFull";
+import Toggles from "../components/map/Toggles"
+import Nearby from "../components/map/Nearby"
+import Advertisement from "../components/realtor/Advertisement"
 
 export default {
   components: {
@@ -189,7 +210,10 @@ export default {
     PropertyListItem,
     PropertySelectedTab,
     InlineSvg,
-    ImageFull
+    ImageFull,
+    Toggles,
+    Nearby,
+    Advertisement
   },
   computed: {
     google: gmapApi,
@@ -211,6 +235,23 @@ export default {
   },
 
   methods: {
+    async resetPage() {
+      this.properties.forEach(function (property) {
+        property.isVisible = true;
+        let distance = this.distanceTo(property);
+        property.distanceToStudy = distance;
+        if (this.map_properties.max_radius < distance) {
+          this.map_properties.max_radius = distance;
+        }
+      }, this);
+      await this.collectRoutes();
+      await this.calculateMinMaxTravelTimes();
+      await this.resetBounds();
+    },
+    addProperty(property) {
+      this.properties.push(property);
+      this.resetPage();
+    },
     setHoverNearby(place) {
       if (place == null) {
         this.nearbyHover = null;
@@ -228,6 +269,7 @@ export default {
     gatherNearbyCycles() {
      
         if (this.showingSantanderCycles) {
+          this.toggledButtons.santander = false;
           this.toggleNearbyPlaces('santander_cycles', false);
           this.showingSantanderCycles = false;
           return;
@@ -244,6 +286,7 @@ export default {
 
     
     this.showingSantanderCycles = true;
+    this.toggledButtons.santander = true;
 
       this.placeServices.nearbySearch(request, (results, status) => {
         if (status == this.google.maps.places.PlacesServiceStatus.OK) {
@@ -265,6 +308,7 @@ export default {
     gatherNearbyLockers() {
      
         if (this.showingAmazonLockers) {
+          this.toggledButtons.amazon = false;
           this.toggleNearbyPlaces('amazon_locker', false);
           this.showingAmazonLockers = false;
           return;
@@ -281,6 +325,7 @@ export default {
 
     
     this.showingAmazonLockers = true;
+    this.toggledButtons.amazon = true;
 
       this.placeServices.nearbySearch(request, (results, status) => {
         if (status == this.google.maps.places.PlacesServiceStatus.OK) {
@@ -377,6 +422,10 @@ export default {
       this.selectedPropertyWindow = '';
       this.showingAmazonLockers = false;
       this.showingSantanderCycles = false;
+      this.toggledButtons = {
+        santander: false,
+        amazon: false
+      }
     },
     resetNearbyIcons() {
           this.toggled = {
@@ -697,6 +746,11 @@ export default {
           Vue.set(property, 'isVisible', false);
         } else if (this.sorting_properties.cycling_time < Math.floor(this.cycling_routes[index].duration.value / 60)) {
           Vue.set(property, 'isVisible', false);
+
+        } else if (this.propertyTypeSelected == 'BUY' && property.transaction_type == 'RENT') {
+          Vue.set(property, 'isVisible', false);
+        } else if (this.propertyTypeSelected == 'RENT' && property.transaction_type == 'BUY') {
+          Vue.set(property, 'isVisible', false);
         } else {
           Vue.set(property, 'isVisible', true);
         }
@@ -724,6 +778,12 @@ export default {
     //Start global loading animation
 
     this.$store.state.loading = true
+
+    setInterval(function () {
+        if (!this.showingAdvertisement) {
+          this.showingAdvertisement = true;
+        }
+      }.bind(this), 30000);
 
     await this.axios.get("http://127.0.0.1:5000/users/" + this.$store.state.user.id).then((response) => {
       //console.log(response.data)
@@ -843,7 +903,19 @@ export default {
         selectedPropertyWindow: '',
         selectedPropertyFeaturesWindow: '',
         showingAmazonLockers: false,
-        showingSantanderCycles: false
+        showingSantanderCycles: false,
+
+        propertyTypeSelected: 'BOTH',
+        propertyTypeOptions: [
+          { item: 'RENT', name: 'Rent' },
+          { item: 'BUY', name: 'Buy' },
+          { item: 'BOTH', name: 'Both'},
+        ],
+        toggledButtons: {
+          amazon: false,
+          santander: false
+        },
+        showingAdvertisement: false
     }
   }
 }
@@ -896,7 +968,7 @@ export default {
 }
 
 .sorting-tab {
-  max-height: 560px;
+  max-height: 610px;
 }
 
 .nearby-place-info {
@@ -947,6 +1019,10 @@ h2 {
   border: 1px solid;
 }
 
+.selected-property-features .features {
+  overflow-y: scroll;
+  height: 85%;
+}
 .selected-property-features.mini {
   height: 50%;
 
@@ -976,5 +1052,6 @@ h2 {
 .error-container {
   width: 60%;
 }
+
 
 </style>
