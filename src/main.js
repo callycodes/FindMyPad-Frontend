@@ -17,6 +17,14 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 const config = require('./config.js');
 
+Vue.mixin({
+  data: function() {
+    return {
+      serverURL: config.getServerURL()
+    }
+  }
+})
+
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 Vue.use(VueConfetti)

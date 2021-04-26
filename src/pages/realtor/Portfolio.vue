@@ -48,7 +48,7 @@ export default {
 
     remove(index) {
       //Send delete request, on completion, toast user and remove from properties array
-      this.axios.delete("http://127.0.0.1:5000/properties/" + this.properties[index].id).then(() => {
+      this.axios.delete(this.serverURL + "/properties/" + this.properties[index].id).then(() => {
         this.$bvToast.toast('We have removed ' + this.properties[index].name, {
           title: `Property Removed`,
           variant: 'success',
@@ -61,7 +61,7 @@ export default {
 
   },
   mounted() {
-    this.axios.get("http://127.0.0.1:5000/properties/user/" + this.$store.state.user.id).then((response) => {
+    this.axios.get(this.serverURL + "/properties/user/" + this.$store.state.user.id).then((response) => {
       //console.log(response.data)
       this.properties = response.data.properties
     });

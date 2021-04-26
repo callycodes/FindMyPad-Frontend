@@ -144,7 +144,7 @@ export default {
       }
 
       await this.axios
-        .get("http://127.0.0.1:5000/" + component + "?url=" + this.url)
+        .get(this.serverURL + "/" + component + "?url=" + this.url)
         .then((response) => {
           this.$store.state.loading = false
           if (response.data.error) {
@@ -174,7 +174,7 @@ export default {
 
       console.log(property)
       
-      response = await this.axios.post("http://127.0.0.1:5000/properties", 
+      response = await this.axios.post(this.serverURL + "/properties", 
       property)
 
       const data = await response.data;

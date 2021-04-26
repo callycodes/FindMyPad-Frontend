@@ -104,7 +104,7 @@ export default {
     },
   methods: {
     saveProfile() {
-      this.axios.put("http://127.0.0.1:5000/users/" + this.$store.state.user.id, 
+      this.axios.put(this.serverURL + "/users/" + this.$store.state.user.id, 
       {
         name: this.name
       }).then(() => {
@@ -115,7 +115,7 @@ export default {
       this.$store.dispatch('setUser', this.$store.state.user)
     },
     saveLocation() {
-      this.axios.put("http://127.0.0.1:5000/users/" + this.$store.state.user.id, 
+      this.axios.put(this.serverURL + "/users/" + this.$store.state.user.id, 
       {
         study_latitude: this.selected_location.lat,
         study_longitude: this.selected_location.lng,
@@ -196,7 +196,7 @@ export default {
       this.MapsInit();
 
     }, this);
-    this.axios.get("http://127.0.0.1:5000/users/" + this.$store.state.user.id).then((response) => {
+    this.axios.get(this.serverURL + "/users/" + this.$store.state.user.id).then((response) => {
         //console.log(response.data)
         this.selected_location.lat = response.data.user.study_latitude;
         this.selected_location.lng = response.data.user.study_longitude;

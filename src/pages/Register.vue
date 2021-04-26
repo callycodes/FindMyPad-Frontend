@@ -43,6 +43,10 @@
         ></b-form-input>
       </b-form-group>
 
+      <b-form-group label="Your Role:" label-for="selector">
+      <b-form-select class="mb-3" v-model="selectedRole" :options="options"></b-form-select>
+      </b-form-group>
+
       <b-button class="mr-2" @click="register" variant="primary">Register</b-button>
       <b-button type="reset" variant="danger">Reset</b-button>
     </b-form>
@@ -73,7 +77,13 @@ export default {
         error: '',
         response: ''
       },
-      register_response: ''
+      register_response: '',
+
+      selectedRole: 'student',
+        options: [
+          { value: 'student', text: 'Student/Working/Other' },
+          { value: 'realtor', text: 'Realtor' },
+        ]
 
     }
   },
@@ -89,11 +99,12 @@ export default {
     async register () {
       const bcrypt = require('bcryptjs')
       const hash = await bcrypt.hash(this.form.password, 6) 
-      const response = await this.axios.post("http://127.0.0.1:5000/auth/register", 
+      const response = await this.axios.post(this.serverURL + "/auth/register", 
       {
         email: this.form.email,
         name: this.form.name,
-        password_hash: hash
+        password_hash: hash,
+        role: this.selectedRole
       })
       const data = await response.data;
       this.response = data

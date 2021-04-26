@@ -622,7 +622,7 @@ export default {
       }
 
       //Send delete request, on completion, toast user and remove from properties array
-      this.axios.delete("http://127.0.0.1:5000/properties/" + this.properties[index].id).then(() => {
+      this.axios.delete(this.serverURL + "/properties/" + this.properties[index].id).then(() => {
         this.$bvToast.toast('We have removed ' + this.properties[index].name, {
           title: `Property Removed`,
           variant: 'success',
@@ -660,7 +660,7 @@ export default {
       this.resetNearbyPlaces();
     },
     async updateProperty(property) {
-      return this.axios.put("http://127.0.0.1:5000/properties/" + property.id,
+      return this.axios.put(this.serverURL + "/properties/" + property.id,
         property)
     },
     prioritiseProperty() {
@@ -693,7 +693,7 @@ export default {
     async collectRoutes() {
       try {
         let walking_url = this.generateURL('walking')
-        await this.axios.get("http://127.0.0.1:5000/getroutes?url=" + encodeURIComponent(walking_url)).then((response) => {
+        await this.axios.get(this.serverURL + "/getroutes?url=" + encodeURIComponent(walking_url)).then((response) => {
           for (let value of response.data.rows) {
             this.walking_routes.push(value.elements[0])
 
@@ -701,7 +701,7 @@ export default {
         })
 
         let cycling_url = this.generateURL('bicycling')
-        await this.axios.get("http://127.0.0.1:5000/getroutes?url=" + encodeURIComponent(cycling_url)).then((response) => {
+        await this.axios.get(this.serverURL + "/getroutes?url=" + encodeURIComponent(cycling_url)).then((response) => {
           for (let value of response.data.rows) {
             this.cycling_routes.push(value.elements[0])
 
@@ -709,7 +709,7 @@ export default {
         })
 
         let driving_url = this.generateURL('driving')
-        await this.axios.get("http://127.0.0.1:5000/getroutes?url=" + encodeURIComponent(driving_url)).then((response) => {
+        await this.axios.get(this.serverURL + "/getroutes?url=" + encodeURIComponent(driving_url)).then((response) => {
           for (let value of response.data.rows) {
             this.driving_routes.push(value.elements[0])
 
@@ -717,7 +717,7 @@ export default {
         })
 
         let transit_url = this.generateURL('transit')
-        await this.axios.get("http://127.0.0.1:5000/getroutes?url=" + encodeURIComponent(transit_url)).then((response) => {
+        await this.axios.get(this.serverURL + "/getroutes?url=" + encodeURIComponent(transit_url)).then((response) => {
           for (let value of response.data.rows) {
             this.transit_routes.push(value.elements[0])
 
@@ -849,15 +849,15 @@ export default {
         if (!this.showingAdvertisement) {
           this.showingAdvertisement = true;
         }
-      }.bind(this), 300000);
+      }.bind(this), 30000);
 
-    await this.axios.get("http://127.0.0.1:5000/users/" + this.$store.state.user.id).then((response) => {
+    await this.axios.get(this.serverURL + "/users/" + this.$store.state.user.id).then((response) => {
       //console.log(response.data)
       this.study.lat = response.data.user.study_latitude;
       this.study.lng = response.data.user.study_longitude;
     });
 
-    await this.axios.get("http://127.0.0.1:5000/properties/user/" + this.$store.state.user.id).then((response) => {
+    await this.axios.get(this.serverURL + "/properties/user/" + this.$store.state.user.id).then((response) => {
       //console.log(response.data)
       this.properties = response.data.properties
 

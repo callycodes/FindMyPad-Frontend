@@ -64,7 +64,7 @@ export default {
   },
   async mounted () {
     //get all realtor properties
-    await this.axios.get("http://127.0.0.1:5000/realtors").then((response) => {
+    await this.axios.get(this.serverURL + "/realtors").then((response) => {
       //console.log(response.data)
       let realtorProperties = response.data.properties
 
@@ -121,7 +121,7 @@ export default {
 
     let i = 0;
     while (i < this.advertisable.length && i < 3) {
-      this.axios.post("http://127.0.0.1:5000/realtors", {id: this.advertisable[i].id, type: 'view'})
+      this.axios.post(this.serverURL + "/realtors", {id: this.advertisable[i].id, type: 'view'})
       this.show.push(this.advertisable[i])
       i++;
     }
@@ -140,7 +140,7 @@ export default {
 
       //Pull existing property from realtors db, clean up, remove id fields etc, then public as own property
       let property = this.show[index]
-      this.axios.post("http://127.0.0.1:5000/realtors", {id: property.id, type: 'import'})
+      this.axios.post(this.serverURL + "/realtors", {id: property.id, type: 'import'})
       property.realtor_property = false;
       property.user_id = this.$store.state.user.id
       let features = []
@@ -165,14 +165,14 @@ export default {
       })
 
 
-      let response = await this.axios.post("http://127.0.0.1:5000/properties", 
+      let response = await this.axios.post(this.serverURL + "/properties", 
       property)
 
       
 
       const data = await response.data;
       if (data.message == 'success') {
-        let imported_property = await this.axios.get("http://127.0.0.1:5000/properties/" + data.id)
+        let imported_property = await this.axios.get(this.serverURL + "/properties/" + data.id)
         this.$emit('add', imported_property.data.property);
         this.$bvToast.toast(data.response, {
           title: `Property Added!`,
