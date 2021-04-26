@@ -1,7 +1,10 @@
 <template>
   <div id="nav">
 
-    <b-button id="toggle-sidebar-btn" @click="toggleSidebar">Toggle Sidebar</b-button>
+    <b-button id="toggle-sidebar-btn" @click="toggleSidebar">
+      <inline-svg width="30" height="30" class="m-2" src="./assets/img/svg/menu.svg"></inline-svg>
+    </b-button>
+
   <b-sidebar :no-close-on-route-change="true" width="300px" :visible="shown" id="nav-sidebar" title="Sidebar" no-header>
       <div id="nav-sidebar">
         <div class="nav-logo">
@@ -41,7 +44,13 @@
 </template>
 
 <script>
+
+import InlineSvg from 'vue-inline-svg';
+
 export default {
+  components: {
+    InlineSvg
+  },
   methods: {
     show: function() {
       this.shown = true;
@@ -184,8 +193,17 @@ button a {
 #toggle-sidebar-btn {
   display: none;
   position: fixed;
-  top: 0px;
-  right: 0px;
+  top: 5px;
+  right: 5px;
+  height: 60px;
+  width: 60px;
+  z-index: 9999;
+  padding: 0px;
+  background-color: var(--jet);
+}
+
+#toggle-sidebar-btn svg {
+  fill: white;
 }
 
 @media (max-width: 1200px) {

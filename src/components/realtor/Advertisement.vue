@@ -7,7 +7,7 @@
       <b-row no-gutters class="property-container mx-auto mt-5 w-75">
         <b-col v-for="(property, index) in show" :key="index">
           
-          <b-card border-variant="dark" class="property-card text-center mx-auto m-1" >
+          <b-card border-variant="dark" class="property-card text-center mx-auto" >
           
           <b-row no-gutters>
             <b-carousel id="image-carousel" :interval="4000" controls indicators>
@@ -15,23 +15,35 @@
             </b-carousel>
           </b-row>
 
-            <b-card-text class="m-3 h-100">
-              <h5 class="font-raleway">{{property.name}}</h5>
+            <b-card-text class="m-3">
+              <h5 class="font-raleway mb-3">{{property.name}}</h5>
 
               <b-row>
-                <b-col cols="12">
-                  <h2 v-if="property.transaction_type == 'BUY'" class="fc-raleway">£{{property.sale_price}}</h2>
+                <b-col class="mb-2" cols="12">
+                  <inline-svg class="float-left mt-1" width="30" height="30" src="./assets/img/svg/pound-sterling.svg"></inline-svg>
+                  <h2 v-if="property.transaction_type == 'BUY'" class="fc-raleway loat-left">£{{property.sale_price}}</h2>
                   <h2 v-else class="fc-raleway">£{{property.monthly_price}}pcm / {{property.weekly_price}}pw</h2>
                 </b-col>
               </b-row>
-              {{property.uid}}
+
+<div class="property-info mb-2">
+                
+      
+      <inline-svg src="./assets/img/svg/bed.svg"></inline-svg>
+                <span class="font-montserrat mr-5">{{property.bedrooms}}</span>
+
+
+                <inline-svg src="./assets/img/svg/bath-tub.svg"></inline-svg>
+                <span class="font-montserrat">{{property.bathrooms}}</span>
+ </div>
+
               <p>{{property.note}}</p>
 
 
-              <b-button @click="save(index)" variant="success" size="lg" block>Import</b-button>
-
-            </b-card-text>
+              
         
+            </b-card-text>
+  <b-button class="save-btn" @click="save(index)" variant="success" size="lg" block>Import</b-button>
           </b-card>
         </b-col>
       </b-row>
@@ -40,12 +52,12 @@
 </template>
 
 <script>
-//import InlineSvg from 'vue-inline-svg';
+import InlineSvg from 'vue-inline-svg';
 
 export default {
   props: ['properties', 'study'],
   components: {
-    //InlineSvg
+    InlineSvg
   },
   computed: {
 
@@ -71,7 +83,8 @@ export default {
             return;
           } else {
             let distance = this.distance(existingProperty, {lat: realtorProperty.latitude, lng: realtorProperty.longitude});
-            //console.log('Distance from: ' + existingProperty.uid + ' to ' + property.uid + " is " + distance);
+            
+            //If property is close to an existing property, recommend it
             if (distance <= 1000) {
               realtorProperty.note = 'Close to your other properties'
               addable = true;
@@ -103,6 +116,7 @@ export default {
       
     })
     
+    //Randomise advertisable properties, so we don't keep suggesting the same ones
     this.advertisable.sort(() => Math.random() - 0.5);
 
     let i = 0;
@@ -123,6 +137,8 @@ export default {
       this.$emit('close');
     },
   async save(index) {
+
+      //Pull existing property from realtors db, clean up, remove id fields etc, then public as own property
       let property = this.show[index]
       this.axios.post("http://127.0.0.1:5000/realtors", {id: property.id, type: 'import'})
       property.realtor_property = false;
@@ -164,6 +180,7 @@ export default {
           solid: true
         })
 
+        //Remove property from suggestions as it's advertisable
         this.show.splice(index, 1);
       } else {
         this.$bvToast.toast(data.response, {
@@ -243,8 +260,16 @@ export default {
   max-height: 150px;
 }
 
-.pos-bottom {
-  margin-bottom: 0px;
-  margin-top: auto;
+.save-btn {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: 280px;
+}
+
+.property-info svg {
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
 }
 </style>

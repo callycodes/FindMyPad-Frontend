@@ -13,7 +13,7 @@
         <b-button :disabled="method == 'DRIVING'" @click="changeMode('DRIVING')" squared class="d-flex font-montserrat float-left" variant="outline-dark">Directions</b-button>
         <div class="clearfix" />
         <h2 class="method-info invert font-montserrat float-left">Per Week: £{{calculatePetrolPrice()}}</h2>
-        <h2 class="method-info invert font-montserrat float-left">Per Year: £{{calculatePetrolPrice() * 52}}</h2>
+        <h2 class="method-info invert font-montserrat float-left">Per Year: £{{parseFloat(calculatePetrolPrice() * 52).toFixed(2)}}</h2>
       </div>
 
       <div v-if="times.cycle" class="method-container clearfix">

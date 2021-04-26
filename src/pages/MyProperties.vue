@@ -23,16 +23,36 @@
             <label for="cycle_range">Max Cycling Time <b>{{sorting_properties.cycling_time}}mins</b></label>
             <b-form-input id="cycle_range" v-model="sorting_properties.cycling_time" @change="sortProperties('cycle_time')" type="range" step="1" :min="map_properties.travel_times.cycle.min" :max="map_properties.travel_times.cycle.max"></b-form-input>
 
-  <label class="font-raleway" for="type_selector">Property Type <b>({{propertyTypeSelected}})</b></label>
-            <b-form-radio-group
-      v-model="propertyTypeSelected"
-      :options="propertyTypeOptions"
-      @change="sortProperties('type')"
-      class="mb-3"
-      id="type_selector"
-      value-field="item"
-      text-field="name"
-    ></b-form-radio-group>
+            <label for="drive_range">Max Driving Time <b>{{sorting_properties.driving_time}}mins</b></label>
+            <b-form-input id="drive_range" v-model="sorting_properties.driving_time" @change="sortProperties('drive_time')" type="range" step="1" :min="map_properties.travel_times.drive.min" :max="map_properties.travel_times.drive.max"></b-form-input>
+
+            <label for="transit_range">Max Transit Time <b>{{sorting_properties.transit_time}}mins</b></label>
+            <b-form-input id="transit_range" v-model="sorting_properties.transit_time" @change="sortProperties('transit_time')" type="range" step="1" :min="map_properties.travel_times.transit.min" :max="map_properties.travel_times.transit.max"></b-form-input>
+
+            <label class="font-raleway" for="sale_selector">Sale Type <b>({{saleTypeSelected}})</b></label>
+            <b-form-radio-group v-model="saleTypeSelected" :options="saleTypeOptions" @change="sortProperties('sale')"
+              class="mb-3"
+              id="sale_selector"
+              value-field="item"
+              text-field="name"
+            ></b-form-radio-group>
+
+            <label class="font-raleway" for="type_selector">Property Type <b>({{propertyTypeSelected}})</b></label>
+            <b-form-radio-group v-model="propertyTypeSelected" :options="propertyTypeOptions" @change="sortProperties('type')"
+              class="mb-3"
+              id="type_selector"
+              value-field="item"
+              text-field="name"
+            ></b-form-radio-group>
+
+            <label class="font-raleway" for="furnish_selector">Furnished Type <b>({{furnishedTypeSelected}})</b></label>
+            <b-form-radio-group v-model="furnishedTypeSelected" :options="furnishedTypeOptions" @change="sortProperties('furnish')"
+              class="mb-3"
+              id="furnish_selector"
+              value-field="item"
+              text-field="name"
+            ></b-form-radio-group>
+
           </div>
 
         </b-card>
@@ -489,6 +509,12 @@ export default {
       var cycle_min = 100000;
       var cycle_max = 1;
 
+      var drive_min = 100000;
+      var drive_max = 1;
+
+      var transit_min = 100000;
+      var transit_max = 1;
+
       /* var drive_min = 100000;
       var drive_max = -1;
 
@@ -521,6 +547,30 @@ export default {
           console.log('Error: Calculating Min and Max Cycle Times');
         }
 
+        try {
+          if (this.driving_routes[i].duration.value < drive_min) {
+            drive_min = this.driving_routes[i].duration.value;
+          }
+
+          if (this.driving_routes[i].duration.value > drive_max) {
+            drive_max = this.driving_routes[i].duration.value;
+          }
+        } catch (e) {
+          console.log('Error: Calculating Min and Max Drive Times');
+        }
+
+        try {
+          if (this.transit_routes[i].duration.value < transit_min) {
+            transit_min = this.transit_routes[i].duration.value;
+          }
+
+          if (this.transit_routes[i].duration.value > transit_max) {
+            transit_max = this.transit_routes[i].duration.value;
+          }
+        } catch (e) {
+          console.log('Error: Calculating Min and Max Transit Times');
+        }
+
       }
 
       this.map_properties.travel_times.walk.min = Math.floor(walk_min / 60);
@@ -529,9 +579,18 @@ export default {
       this.map_properties.travel_times.cycle.min = Math.floor(cycle_min / 60);
       this.map_properties.travel_times.cycle.max = Math.floor(cycle_max / 60);
 
+      this.map_properties.travel_times.drive.min = Math.floor(drive_min / 60);
+      this.map_properties.travel_times.drive.max = Math.floor(drive_max / 60);
+
+      this.map_properties.travel_times.transit.min = Math.floor(transit_min / 60);
+      this.map_properties.travel_times.transit.max = Math.floor(transit_max / 60);
+
       this.sorting_properties.radius = this.convertMetersToKilometers(this.map_properties.max_radius) * 2;
       this.sorting_properties.walking_time = this.map_properties.travel_times.walk.max;
       this.sorting_properties.cycling_time = this.map_properties.travel_times.cycle.max;
+      this.sorting_properties.driving_time = this.map_properties.travel_times.drive.max;
+      this.sorting_properties.transit_time = this.map_properties.travel_times.transit.max;
+
 
       
 
@@ -739,17 +798,24 @@ export default {
       this.properties.forEach(function (property, index) {
 
         //Sort by radius
-
         if (property.distanceToStudy >= this.getSortRadius) {
           Vue.set(property, 'isVisible', false);
         } else if (this.sorting_properties.walking_time < Math.floor(this.walking_routes[index].duration.value / 60)) {
           Vue.set(property, 'isVisible', false);
         } else if (this.sorting_properties.cycling_time < Math.floor(this.cycling_routes[index].duration.value / 60)) {
           Vue.set(property, 'isVisible', false);
-
-        } else if (this.propertyTypeSelected == 'BUY' && property.transaction_type == 'RENT') {
+        } else if (this.sorting_properties.driving_time < Math.floor(this.driving_routes[index].duration.value / 60)) {
           Vue.set(property, 'isVisible', false);
-        } else if (this.propertyTypeSelected == 'RENT' && property.transaction_type == 'BUY') {
+        } else if (this.sorting_properties.transit_time < Math.floor(this.transit_routes[index].duration.value / 60)) {
+          Vue.set(property, 'isVisible', false);
+
+        } else if (this.saleTypeSelected != 'BOTH' && property.transaction_type != this.saleTypeSelected) {
+          Vue.set(property, 'isVisible', false);
+        } else if (this.propertyTypeSelected != 'ALL' && !property.type.toUpperCase().includes(this.propertyTypeSelected)) {
+          Vue.set(property, 'isVisible', false);
+          console.log('type')
+        
+        } else if (this.furnishedTypeSelected != 'ALL' && property.furnished == null || this.furnishedTypeSelected != 'ALL' && !property.furnished.toUpperCase().includes(this.furnishedTypeSelected)) {
           Vue.set(property, 'isVisible', false);
         } else {
           Vue.set(property, 'isVisible', true);
@@ -783,7 +849,7 @@ export default {
         if (!this.showingAdvertisement) {
           this.showingAdvertisement = true;
         }
-      }.bind(this), 30000);
+      }.bind(this), 300000);
 
     await this.axios.get("http://127.0.0.1:5000/users/" + this.$store.state.user.id).then((response) => {
       //console.log(response.data)
@@ -905,12 +971,28 @@ export default {
         showingAmazonLockers: false,
         showingSantanderCycles: false,
 
-        propertyTypeSelected: 'BOTH',
-        propertyTypeOptions: [
+        saleTypeSelected: 'BOTH',
+        saleTypeOptions: [
           { item: 'RENT', name: 'Rent' },
           { item: 'BUY', name: 'Buy' },
           { item: 'BOTH', name: 'Both'},
         ],
+
+        propertyTypeSelected: 'ALL',
+        propertyTypeOptions: [
+          { item: 'FLAT', name: 'Flat' },
+          { item: 'DETACHED', name: 'Detached' },
+          { item: 'TERRACED', name: 'Terraced' },
+          { item: 'ALL', name: 'All'},
+        ],
+
+        furnishedTypeSelected: 'ALL',
+        furnishedTypeOptions: [
+          { item: 'UNFURNISHED', name: 'Unfurnished' },
+          { item: 'FURNISHED', name: 'Furnished' },
+          { item: 'ALL', name: 'All'},
+        ],
+
         toggledButtons: {
           amazon: false,
           santander: false
