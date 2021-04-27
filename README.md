@@ -1,32 +1,30 @@
 # FindMyPad
 
+## What is this?
+FindMyPad is a final year project submission, my last submission for my Software Engineering BEng. It sums up 3 years of study and combines only technologies I've studied in my own time during University. Being a student in London, I've really struggled with selecting locations for accomodation each year, having to consider price, space, aesthetics and the ability to travel/walk/cycle to uni. 
+
+Unfortunately, sites like Rightmove and Zoopla don't offer these commuting criteria, but do have an extensive range of common filtering criteria, which makes them great for finding/filtering, but not comparing.
+
+That's where FindMyPad can help, giving you a simple copy and paste link interface to import any of your potential properties from popular sites Rightmove and Zoopla, the platform will load your property into your account and generate useful and insightful comparison data, such as the times and cost to commute to work/study for all different types of transport, such as walking, cycling, driving and even public transport. You can also toggle nearby amenities and like your favourite ones, helping you make the right choice when comparing properties.
+
+The realtor functionality allows us to host a seperate dashboard for realtors to import their listed properties onto the site, and the system will automatically recommend these properties to users if it's near to their place of work/study or in proximity to their existing properties they have imported.
+
+You can view some screenshots at: https://findmypad.cally.dev
+
 ## Demo
 Visit <a href="https://findmypad.cally.dev">https://findmypad.cally.dev</a> for a live version!
 
 ## Project setup
 ```
+Node - v12.18.3
+NPM - v6.14.9
+
 npm install
-```
-
-### Compiles and hot-reloads for development
-```
 npm run serve
+npm run build - for production
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-
-CREDITS:
+## CREDITS:
 Pexels Mike: https://www.pexels.com/photo/white-and-brown-concrete-2-storey-house-near-tree-463996/?utm_content=attributionCopyText&utm_medium=referral&utm_source=pexels
 
 bath svg: <div>Icons made by <a href="https://www.flaticon.com/authors/cursor-creative" title="Cursor Creative">Cursor Creative</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
