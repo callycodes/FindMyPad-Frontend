@@ -505,24 +505,14 @@ export default {
 
       var walk_min = 100000;
       var walk_max = 1;
-
       var cycle_min = 100000;
       var cycle_max = 1;
-
       var drive_min = 100000;
       var drive_max = 1;
-
       var transit_min = 100000;
       var transit_max = 1;
 
-      /* var drive_min = 100000;
-      var drive_max = -1;
-
-      var transit_min = 100000;
-      var transit_max = -1; */
-
       for (var i = 0; i < this.properties.length; i++) {
-
         try {
           if (this.walking_routes[i].duration.value < walk_min) {
             walk_min = this.walking_routes[i].duration.value;
@@ -797,7 +787,6 @@ export default {
 
       this.properties.forEach(function (property, index) {
 
-        //Sort by radius
         if (property.distanceToStudy >= this.getSortRadius) {
           Vue.set(property, 'isVisible', false);
         } else if (this.sorting_properties.walking_time < Math.floor(this.walking_routes[index].duration.value / 60)) {
@@ -808,19 +797,16 @@ export default {
           Vue.set(property, 'isVisible', false);
         } else if (this.sorting_properties.transit_time < Math.floor(this.transit_routes[index].duration.value / 60)) {
           Vue.set(property, 'isVisible', false);
-
         } else if (this.saleTypeSelected != 'BOTH' && property.transaction_type != this.saleTypeSelected) {
           Vue.set(property, 'isVisible', false);
         } else if (this.propertyTypeSelected != 'ALL' && !property.type.toUpperCase().includes(this.propertyTypeSelected)) {
           Vue.set(property, 'isVisible', false);
           console.log('type')
-        
         } else if (this.furnishedTypeSelected != 'ALL' && property.furnished == null || this.furnishedTypeSelected != 'ALL' && !property.furnished.toUpperCase().includes(this.furnishedTypeSelected)) {
           Vue.set(property, 'isVisible', false);
         } else {
           Vue.set(property, 'isVisible', true);
         }
-
       }, this);
 
       this.$forceUpdate();

@@ -154,7 +154,6 @@ export default {
               solid: true
             })
           } else {
-            console.log(response.data)
             this.foundProperty = response.data
             this.foundProperty.user_id = this.$store.state.user.id
             this.state = 'save';
@@ -172,11 +171,8 @@ export default {
         property.realtor_property = false;
       }
 
-      console.log(property)
-      
       response = await this.axios.post(this.serverURL + "/properties", 
       property)
-
       const data = await response.data;
       if (data.message == 'success') {
         this.$bvToast.toast(data.response, {
@@ -185,7 +181,6 @@ export default {
           solid: true
         })
         this.state = 'complete';
-
         this.$store.dispatch('sendConfetti', this.$confetti)
         this.url = ""
       } else {

@@ -37,12 +37,10 @@
 <GmapMarker
     ref="studyMarker"
     :position="{lat: selected_location.lat, lng: selected_location.lng}"
-    @dragend="dragged"
-
+    @dragend="dragged" 
     :clickable="true"
     :draggable="true"
-    @click="center={lat: selected_location.lat, lng: selected_location.lng}"
-    
+    @click="center={lat: selected_location.lat, lng: selected_location.lng}" 
     :icon="getMarkerIcon()"
   />
 
